@@ -16,27 +16,29 @@ def load_model():
 
 model = load_model()
 
-st.title('Animal Faces Classification')
+st.title('Animal Faces 🐶🐱🦊')
 
-# State 1: Upload image or take one with the camera
-uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
+col1, col2 = st.columns(2)
 
-# If an image is uploaded or taken
-if uploaded_file is not None:
-    image = Image.open(uploaded_file)
-    st.write("Classifying...")    
-    
-    # Resize
-    processed_image = preprocess_image(image, target_size=(256, 256))  # Modify this line based on your model
+with col1:
+    uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
-    # Predict the class
-    prediction = model.predict(processed_image)
+with col2:
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        st.write("Classifying...")    
 
-    scores = tf.nn.softmax(prediction[0])  # Assuming a softmax final layer
+        # Resize
+        processed_image = preprocess_image(image, target_size=(256, 256))  # Modify this line based on your model
 
-    # Get the highest probability class
-    predicted_class = np.argmax(scores, axis=0)
-    probability = np.max(scores)
+        # Predict the class
+        prediction = model.predict(processed_image)
 
-    st.image(image, use_column_width=True)
-    st.header(f'{animals[predicted_class]} {probability*100:.2f}%', anchor='center')
+        scores = tf.nn.softmax(prediction[0])  # Assuming a softmax final layer
+
+        # Get the highest probability class
+        predicted_class = np.argmax(scores, axis=0)
+        probability = np.max(scores)
+
+        st.image(image, use_column_width=True)
+        st.header(f'Prediction: {animals[predicted_class]}')
